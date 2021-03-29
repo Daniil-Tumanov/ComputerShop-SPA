@@ -19,6 +19,10 @@ class mainController extends Controller
         }
         return response()->json([$notes], 200);
     }
+    public function search(Request $request){
+        $search = $request->get('q');
+        return Products::search($search)->get();
+    }
     // public function searchByNote(Request $req){
     //     $data = $req->get('query');
     //     $search = Products::where('title', 'like', "%$data%")

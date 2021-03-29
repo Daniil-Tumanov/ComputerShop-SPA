@@ -4,9 +4,69 @@ var app = new Vue({
     data: {
         products: [],
         bag: [],
-        pagination: {}
+        sum: 0,
+        pagination: {},
+        carts: [],
+        cartadd: {
+            id: '',
+            IMG: '',
+            name: '',
+            description: '',
+            price: '',
+            specifications: '',
+            amount: ''
+        },
+        badge: '0',
+        quantity: '1',
+        totalprice: '0'
     },
     methods: {
+        searchProduct(){
+            fetch('/api/products/search?q='+this.search)
+            .then(res => res.json())
+            .then(res => {
+                this.caris = res;
+                this.search = '';
+                this.showsearch = true;
+            })
+            .catch(err => {
+                console.log(err);
+            });
+        },
+        viewCart(){
+            if(localStorage.getItem('carts')){
+                this.carts = JSON.parse(localStorage.getItem('carts'));
+                this.badge = this.carts.length;
+                this.totalprice = this.carts.reduce((total, item)=>{
+                    return total + item.amount * item.price;
+                }, 0);
+            }
+        },
+        addCart(pro){
+            // if (this.carts.id == pro.ID){
+            //     this.quantity++;
+            // }
+            this.cartadd.id = pro.ID;
+            this.cartadd.IMG = pro.IMG;
+            this.cartadd.name = pro.Name;
+            this.cartadd.description = pro.Description;
+            this.cartadd.price = pro.Price;
+            this.cartadd.specifications = pro.Specifications;
+            this.cartadd.amount = this.quantity;
+            this.carts.push(this.cartadd);
+            this.cartadd = {};
+            this.storeCart();
+            console.log(pro)
+        },
+        removeCart(pro){
+            this.carts.splice(pro, 1);
+            this.storeCart();
+        },
+        storeCart(){
+            let parsed = JSON.stringify(this.carts);
+            localStorage.setItem('carts', parsed);
+            this.viewCart();
+        },
         viewProduct(pagi){
             pagi = pagi || '/api/products';
             let self = this;
@@ -29,13 +89,32 @@ var app = new Vue({
                 console.log(self.products)
                 console.log(self.pagination)
             });
-        }
-    },
+        },
+    //     addToBag: function(ID){
+    //         let self = this;
+    //         let founded = self.bag.find(product => product.id == ID);
+    //         if(!founded){
+    //             this.bag.push({id: ID, quantity: 1});
+    //         }
+    //         else{
+    //             founded.quantity++;
+    //         }
+    //         self.sum = 0;
+    //         for(var productInBag of self.bag){
+    //             console.log(productInBag);
+    //             let foundedProduct = self.products.find(products => products.id == productInBag.id);
+    //             console.log(self.bag);
+    //             self.sum += foundedProduct.Price * productInBag.quantity;
+    //         }
+    //         console.log(this.bag);
+    //     }
+     },
     watch: {
 
     },
      mounted: function(){
          this.viewProduct();
+         this.viewCart();
     //     pagi = pagi || '/api/products';
     //     let self = this;
     //     axios
