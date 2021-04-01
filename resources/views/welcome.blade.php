@@ -85,19 +85,17 @@
     </ul>
 </div> -->
 
-<form action="search.php" method="post" class="search_field">
-<input type="search"  class="search" name="search" placeholder="Поиск" />
-<input type="submit" name="do_search" value="" class="submit" />
-</form>
+
+
 <!-- <div class="cart">
 <a href="cart.php"><img src="img/cart.svg" width="50">
 <p>Корзина</p>
 </div></a>  -->
-</div>
-<div>
 
 <div id="app">
-
+<div class="search_field">
+<input type="text"  class="search" v-model="search" name="search" placeholder="Поиск" />
+</div>
 <div class="content">
 <div class="row mt-2 mb-2">
         <div class="col-md-10">&nbsp;</div>
@@ -192,9 +190,11 @@
     </div>
     <!--  -->
     <div class="popular">
-      <p>Популярные товары</p>
+    <p v-if="search != ''">По запросу @{{search}} найдено:</p>
+      <p v-else>Популярные товары</p>
       <hr class="line">
-      <a  v-for="product in products">
+ 
+      <a  v-for="product in filterProducts">
             <div class='containerPos'>
               <img :src="'img/'+ product.IMG" class='containerImg'>
             <div class='containerText'>

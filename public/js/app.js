@@ -18,7 +18,8 @@ var app = new Vue({
         },
         badge: '0',
         quantity: '1',
-        totalprice: '0'
+        totalprice: '0',
+        search: ''
     },
     methods: {
         searchProduct(){
@@ -136,6 +137,12 @@ var app = new Vue({
     //     });
     },
     computed:{
+        filterProducts(){
+            console.log(this.search)
+            return this.products.filter(product => {
+                return product.Name.toLowerCase().includes(this.search.toLowerCase()) || product.Description.toLowerCase().includes(this.search.toLowerCase());
+            })
+        }
 
     }
 })
