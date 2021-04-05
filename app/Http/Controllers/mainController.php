@@ -37,6 +37,12 @@ class mainController extends Controller
             'password' => 'required'
         ]);
 
+        if(User::where('email', $validateFields['email'])->exists()){
+            return redirect(route('/'))->withErrors([
+                'email' => 'Такой email уже зарегистрирован'
+            ]);
+        }
+
         $user = User::create($validateFields);
         if($user){
             Auth::login($user);
@@ -54,14 +60,19 @@ class mainController extends Controller
 
     public function login(Request $request)
     {
-       if(Auth::attempt(['email' => $request->email, 'password' => $request->password], true))
+        if(Auth::check()){
+            return redirect()->intended(route('user.personal'));
+        }
+        $formFields = $request->only(['email', 'password']);
+       if(Auth::attempt($formFields))
        {
-           return response()->json(Auth::user());
+           return redirect()->intended(route('user.personal'));
        }
        else{
-            return response()->json(['error' => 'Could not log you in']);
+            return redirect(route('/'))->withErrors([
+                'email' => 'Ошибка при авторизации'
+            ]);
        }
-
     }
 
     public function register(Request $request){

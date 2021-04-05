@@ -41,10 +41,41 @@
             </li>
             </ul>
        
-        <div class="login">
-          <a href="login" class="login_link">Вход</a>
+            <div class="login">
+          @if(Auth::check())
+      {{ Auth::user()->name}}
+      <a href="{{ route('user.logout') }}" class="register_link">Выход</a>
+      @else
+          <a href="#ModalLogin" class="login_link">Вход</a>
             </p>
-            
+            <div id="ModalLogin" class="Modal">
+        <div class="Modal_Body">
+        <form action="{{ route('user.login') }}" method="POST" class="needs-validation">
+                          @csrf
+                      <div class="form-row">
+                        <div class="col-md-12 mb-3">
+                          <label for="Email" style="color: white">E-mail</label>
+                          <div class="input-group">
+                            <input type="email" class="form-control" name="email" id="Email" placeholder="E-mail" aria-describedby="inputGroupPrepend" required>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-row">
+                        <div class="col-md-12 mb-3">
+                          <label for="validationCustom03" style="color: white">Пароль</label>
+                          <input type="password" minlength="6" class="form-control" name="password" id="validationCustom03" placeholder="Пароль" required>
+                        </div>
+                      </div>
+                      <center>
+                      <button class="btn btn-primary" type="submit">Войти</button>
+                      <a href="#ModalRegister">Зарегистрироваться</a>
+                      </center>
+                    </form>
+                  </div>
+                  <a href="#" class="ModalFull"></a>
+                
+        
+    </div>
             <p>
                 <a href="#ModalRegister" class="register_link">Регистрация</a>
             <p>
@@ -63,10 +94,10 @@
                           <label for="validationCustom01" style="color: white">Фамилия</label>
                           <input type="text" pattern="^[А-Яа-яЁё\s]+$" name="LastName" class="form-control" id="validationCustom05" placeholder="Фамилия" value="" required>
                         </div>
-                          <div class="col-md-12 mb-3">
+                          <!-- <div class="col-md-12 mb-3">
                           <label for="validationCustom02" style="color: white">Логин</label>
                           <input type="text" pattern="^[a-zA-Z1-9]+$" class="form-control" name="Login" id="validationCustom02" placeholder="Логин" value="" required>
-                        </div>
+                        </div> -->
                         <div class="col-md-12 mb-3">
                           <label for="validationEmail" style="color: white">E-mail</label>
                           <div class="input-group">
@@ -130,10 +161,11 @@
                   </div>
                   <a href="#" class="ModalFull"></a>
                 </div>
-        
+                @endif
     </div>
+    
     <div class="login_logo">
-                <a href="profile" class="login_logo-link"><img src="img/login-logo.svg" alt="Login-logo" class="login-logo"></a>
+                <a href="{{ route('user.personal') }}" class="login_logo-link"><img src="img/login-logo.svg" alt="Login-logo" class="login-logo"></a>
                 </div>
             </div>
             

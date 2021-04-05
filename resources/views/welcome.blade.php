@@ -42,9 +42,44 @@
             </ul>
        
         <div class="login">
-          <a href="login" class="login_link">Вход</a>
+          @if(Auth::check())
+      {{ Auth::user()->name}}
+      <a href="{{ route('user.logout') }}" class="register_link">Выход</a>
+        </div>
+        <div class="login_logo">
+                <a href="{{ route('user.personal') }}" class="login_logo-link"><img src="img/login-logo.svg" alt="Login-logo" class="login-logo"></a>
+                </div>
+      @else
+          <a href="#ModalLogin" class="login_link">Вход</a>
             </p>
-            
+            <div id="ModalLogin" class="Modal">
+        <div class="Modal_Body">
+        <form action="{{ route('user.login') }}" method="POST" class="needs-validation">
+                          @csrf
+                      <div class="form-row">
+                        <div class="col-md-12 mb-3">
+                          <label for="Email" style="color: white">E-mail</label>
+                          <div class="input-group">
+                            <input type="email" class="form-control" name="email" id="Email" placeholder="E-mail" aria-describedby="inputGroupPrepend" required>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-row">
+                        <div class="col-md-12 mb-3">
+                          <label for="validationCustom03" style="color: white">Пароль</label>
+                          <input type="password" minlength="6" class="form-control" name="password" id="validationCustom03" placeholder="Пароль" required>
+                        </div>
+                      </div>
+                      <center>
+                      <button class="btn btn-primary" type="submit">Войти</button>
+                      <a href="#ModalRegister">Зарегистрироваться</a>
+                      </center>
+                    </form>
+                  </div>
+                  <a href="#" class="ModalFull"></a>
+                
+        
+    </div>
             <p>
                 <a href="#ModalRegister" class="register_link">Регистрация</a>
             <p>
@@ -130,14 +165,16 @@
                   </div>
                   <a href="#" class="ModalFull"></a>
                 </div>
-        
+                
     </div>
+    
     <div class="login_logo">
-                <a href="profile" class="login_logo-link"><img src="img/login-logo.svg" alt="Login-logo" class="login-logo"></a>
+                <a href="#ModalLogin" class="login_logo-link"><img src="img/login-logo.svg" alt="Login-logo" class="login-logo"></a>
                 </div>
             </div>
             
     </div>
+    @endif
 </header>
         <div class="flex-center position-ref full-height">
             @if (Route::has('login'))

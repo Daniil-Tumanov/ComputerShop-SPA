@@ -27,6 +27,7 @@ Route::name('user.')->group(function(){
         }
         return view('login');
     })->name('login');;
+    Route::post('/login', 'mainController@login');
     Route::get('/registration', function(){
         if(Auth::check()){
             return redirect(route('/'));
