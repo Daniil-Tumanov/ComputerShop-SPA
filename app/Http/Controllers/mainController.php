@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Products;
+use Illuminate\Support\Facades\Auth;
+use App\User;
 
 class mainController extends Controller
 {
     public function products(){
-        return response()->json(Products::paginate(6));
+        return response()->json(Products::paginate(55));
     }
 
     public function productById($id){
@@ -19,18 +21,68 @@ class mainController extends Controller
         }
         return response()->json([$notes], 200);
     }
+
     public function search(Request $request){
         $search = $request->get('q');
         return Products::search($search)->get();
     }
-    // public function searchByNote(Request $req){
-    //     $data = $req->get('query');
-    //     $search = Products::where('title', 'like', "%$data%")
-    //                 ->orWhere('content', 'like', "%$data%")
-    //                 ->get();
-    //     if($search->isEmpty()){
-    //         return response()->json(['status code' => 404,'status text' => 'Notes not found'], 404);
-    //         }
-    //         return response()->json(['status code' => 200,'status text' => 'Found notes', 'Notes' => $search], 200);
-    // }
+
+    public function save(Request $request){
+        if(Auth::check()){
+            return redirect(route('user.personal'));
+        }
+        $validateFields = $request->validate([
+            'name' => 'required',
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
+
+        $user = User::create($validateFields);
+        if($user){
+            Auth::login($user);
+            return redirect(route('user.personal'));
+        }
+
+        return redirect(route('user.personal'))->withErrors([
+            'formError' => 'Произошла ошибка при сохранении пользователя'
+        ]);
+    }
+    public function init(){
+        $user = Auth::user();
+        return response()->json($user);
+    }
+
+    public function login(Request $request)
+    {
+       if(Auth::attempt(['email' => $request->email, 'password' => $request->password], true))
+       {
+           return response()->json(Auth::user());
+       }
+       else{
+            return response()->json(['error' => 'Could not log you in']);
+       }
+
+    }
+
+    public function register(Request $request){
+        $user = User::where('email', $request->email)->first();
+
+        if(isset($user->id)){
+            return response()->json(['error' => 'Username already exists']);
+        }
+        $user = new User();
+
+        $user->username = $request->email;
+        $user->password = bcrypt($request->password);
+        $user->save();
+
+        Auth::login($user);
+
+        return response()->json($user);
+           
+    }
+    
+    public function logout(Request $request){
+        Auth::logout();
+    }
 }

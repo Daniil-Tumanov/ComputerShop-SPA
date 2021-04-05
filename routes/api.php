@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,4 +22,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::get('products', 'mainController@products');
 Route::get('products/{id}', 'mainController@productById');
 Route::get('products/search', 'mainController@search');
-//Route::get('products', 'mainController@searchByNote');
+
+// Route::prefix('auth')->group(function(){
+//     Route::get('init', 'mainController@init');
+
+//     Route::post('login','mainController@login');
+//     Route::post('register', 'mainController@register');
+//     Route::post('logout, @mainController@logout');
+//  });

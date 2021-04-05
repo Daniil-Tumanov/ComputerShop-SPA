@@ -13,13 +13,26 @@ var app = new Vue({
             name: '',
             description: '',
             price: '',
-            specifications: '',
-            amount: ''
+            specifications: ''
         },
         badge: '0',
         quantity: '1',
         totalprice: '0',
-        search: ''
+        search: '',
+        minPrice: 0,
+        maxPrice: 100000,
+        selected: 'Все',
+        sortedProducts: [],
+        categories: [
+            {name: 'Все', value: '1'},
+            {name: 'Процессоры', value: '2'},
+            {name: 'Видеокарты', value: '3'},
+            {name: 'Материнские платы', value: '4'},
+            {name: 'Оперативная память', value: '5'},
+            {name: 'Блоки питания', value: '6'},
+            {name: 'Корпуса', value: '7'},
+            {name: 'Накопители', value: '8'},
+          ]
     },
     methods: {
         searchProduct(){
@@ -44,9 +57,6 @@ var app = new Vue({
             }
         },
         addCart(pro){
-            // if (this.carts.id == pro.ID){
-            //     this.quantity++;
-            // }
             this.cartadd.id = pro.ID;
             this.cartadd.IMG = pro.IMG;
             this.cartadd.name = pro.Name;
@@ -57,7 +67,8 @@ var app = new Vue({
             this.carts.push(this.cartadd);
             this.cartadd = {};
             this.storeCart();
-            console.log(pro)
+            console.log(pro);
+            alert('Товар добавлен в корзину');
         },
         removeCart(pro){
             this.carts.splice(pro, 1);
@@ -91,6 +102,30 @@ var app = new Vue({
                 console.log(self.pagination)
             });
         },
+        
+        setRangeSlider() {
+            if (this.minPrice > this.maxPrice) {
+              let tmp = this.maxPrice;
+              this.maxPrice = this.minPrice;
+              this.minPrice = tmp;
+            }
+            this.sortByCategories()
+          },
+          sortByCategories(category) {
+            let self = this;
+            
+            this.sortedProducts = this.products
+            this.sortedProducts = this.sortedProducts.filter(function (item) {
+              return item.Price >= self.minPrice && item.Price <= self.maxPrice
+            })
+            if (category) {
+              this.sortedProducts = this.sortedProducts.filter(function (e) {
+                self.selected === category.name;
+                return e.IdCategory === category.value
+              })
+            }
+            
+          },
     //     addToBag: function(ID){
     //         let self = this;
     //         let founded = self.bag.find(product => product.id == ID);
@@ -116,34 +151,33 @@ var app = new Vue({
      mounted: function(){
          this.viewProduct();
          this.viewCart();
-    //     pagi = pagi || '/api/products';
-    //     let self = this;
-    //     axios
-    //     .get(pagi)
-    //     .then(response => {
-    //         self.products = response.data;
-    //         self.pagination = {
-    //             currentPage: response.meta.currentPage,
-    //             lastPage: response.meta.lastPage,
-    //             fromPage: response.meta.fromPage,
-    //             toPage: response.meta.toPage,
-    //             totalPage: response.meta.totalPage,
-    //             pathPage: response.meta.pathPage+"?page=",
-    //             firstLink = response.links.first,
-    //             lastLink = response.links.prev,
-    //             nextLink = response.links.next
-    //         }
-    //         console.log(self.products)
-    //     });
     },
     computed:{
         filterProducts(){
             console.log(this.search)
+            if(this.search.length){
             return this.products.filter(product => {
                 return product.Name.toLowerCase().includes(this.search.toLowerCase()) || product.Description.toLowerCase().includes(this.search.toLowerCase());
             })
         }
 
+            if (this.sortedProducts.length) {
+                return this.sortedProducts
+            }
+            else{
+                return this.products
+            }
+        },
+    //     filteredProducts() {
+    //     if (this.sortedProducts.length) {
+    //       return this.sortedProducts
+    //     } else {
+    //       return this.PRODUCTS
+    //     }
+    //   },
+        
+
     }
 })
 }
+// var sortByPrice = function (d1, d2) { return (d1.price > d2.price) ? 1 : -1; };
