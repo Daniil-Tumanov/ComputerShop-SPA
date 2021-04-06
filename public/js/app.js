@@ -32,7 +32,8 @@ var app = new Vue({
             {name: 'Блоки питания', value: '6'},
             {name: 'Корпуса', value: '7'},
             {name: 'Накопители', value: '8'},
-          ]
+          ],
+          sortBy: null,
     },
     methods: {
         searchProduct(){
@@ -126,6 +127,11 @@ var app = new Vue({
             }
             
           },
+          sortProduct() {
+            if (this.sortType == 'price') {
+                this.products = this.products.sort((prev, curr) => prev.Price - curr.Price);
+            }
+          }
     //     addToBag: function(ID){
     //         let self = this;
     //         let founded = self.bag.find(product => product.id == ID);
@@ -154,6 +160,25 @@ var app = new Vue({
     },
     computed:{
         filterProducts(){
+            if(this.sortBy === 'default'){
+                return this.products.sort((prev, curr) => {
+                    console.log(prev.ID);
+                  return prev.ID > curr.ID ? 1 : -1;
+              });
+            }
+            if (this.sortBy === 'by-name') {
+                return this.products.sort((prev, curr) => {
+                    console.log(prev.Name);
+                  return prev.Name > curr.Name ? 1 : -1;
+              });
+            }
+            if (this.sortBy === 'by-price') {
+                return this.products.sort((prev, curr) => {
+                    console.log(prev.Price);
+                  return prev.Price - curr.Price;
+              });
+            }
+           
             console.log(this.search)
             if(this.search.length){
             return this.products.filter(product => {
@@ -168,6 +193,7 @@ var app = new Vue({
                 return this.products
             }
         },
+        
     //     filteredProducts() {
     //     if (this.sortedProducts.length) {
     //       return this.sortedProducts

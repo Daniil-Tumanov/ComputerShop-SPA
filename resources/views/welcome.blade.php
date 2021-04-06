@@ -325,6 +325,12 @@
       @{{category.name}}
     </option>
           </select>
+          <p>Сортировка:</p>
+          <select v-model="sortBy">
+    <option value="default">Стандарт</option>
+    <option value="by-name">По имени</option>
+    <option value="by-price">По цене</option>
+  </select>
           <p>Цена:</p>
       <div class="range-slider">
       
